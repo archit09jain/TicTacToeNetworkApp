@@ -1,4 +1,6 @@
+import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,16 +12,15 @@ public class StandardTicTacToeGameController implements Controller{
     private Player players[];
     private DataSource dataSource;
     private int turn = 0;
-    private ServerSocket serverSocket1,serverSocket2;
+    private Socket socket1,socket2;
 
 
-    StandardTicTacToeGameController(Player players[],ServerSocket serverSocket1,ServerSocket serverSocket2) {
+    StandardTicTacToeGameController(Player players[], Socket socket1, Socket socket2) {
         this.players = players;
         System.out.println(players);
-        this.serverSocket1 = serverSocket1;
-        this.serverSocket2 = serverSocket2;
-        dataSource = new DataSource(serverSocket1,serverSocket2);
-
+        this.socket1 = socket1;
+        this.socket2 = socket2;
+        dataSource = new DataSource(socket1,socket2);
     }
 
 
@@ -29,7 +30,6 @@ public class StandardTicTacToeGameController implements Controller{
 
     @Override
     public int play() {
-        //enter the code for game simulator
 
         game.displayBoard();
         System.out.println("");
@@ -38,8 +38,12 @@ public class StandardTicTacToeGameController implements Controller{
         System.out.println("Enter the coordinates: ");
 
 
-
-        ArrayList<Integer> list = dataSource.getDataInput(turn);
+        ArrayList<Integer> list = null;
+        try {
+            list = dataSource.getDataInput(turn);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         int x = list.get(0);
         int y = list.get(1);
